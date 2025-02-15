@@ -1,0 +1,23 @@
+# Virtual environment
+venv/
+.env
+*.pyc
+__pycache__/
+
+# IDE / Editor files
+.vscode/
+.idea/
+*.swp
+
+# Logs & Cache
+*.log
+instance/
+*.sqlite3
+
+# Dependencies (if using virtual environment)
+Pipfile
+Pipfile.lock
+
+# Flask Secrets
+.env
+config.py  # If contains sensitive info like API keys
