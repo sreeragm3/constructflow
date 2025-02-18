@@ -1,12 +1,271 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Hello world</h1>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Page</title>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
+      import {
+        getAuth,
+        signInWithEmailAndPassword,
+        createUserWithEmailAndPassword,
+      } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyCrzImxJ9_vmBKIjB_61hQGOBVv_XVVUBQ",
+        authDomain: "constructflow-947b1.firebaseapp.com",
+        projectId: "constructflow-947b1",
+        storageBucket: "constructflow-947b1.firebasestorage.app",
+        messagingSenderId: "587590014345",
+        appId: "1:587590014345:web:0bf7fc34d8d6184c75fd58",
+        measurementId: "G-GZ9BT70CFP",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+
+      // Show the appropriate form based on user selection
+      document.getElementById("user-type").addEventListener("change", (e) => {
+        const userType = e.target.value;
+        document.getElementById("admin-signup-form").style.display =
+          userType === "admin" ? "block" : "none";
+        document.getElementById("admin-login-form").style.display =
+          userType === "admin" ? "block" : "none";
+        document.getElementById("user-signup-form").style.display =
+          userType === "user" ? "block" : "none";
+        document.getElementById("user-login-form").style.display =
+          userType === "user" ? "block" : "none";
+      });
+
+      // Admin Signup
+      document
+        .getElementById("admin-signup-form")
+        .addEventListener("submit", (e) => {
+          e.preventDefault();
+
+          const email = document.getElementById("admin-email").value;
+          const password = document.getElementById("admin-password").value;
+
+          createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+              return userCredential.user.getIdToken();
+            })
+            .then((idToken) => {
+              console.log("ID Token:", idToken); // Log the ID token
+              return fetch("/signup", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: `id_token=${idToken}&user_type=admin`, // Set user_type to "admin"
+              });
+            })
+            .then((response) => {
+              if (response.ok) {
+                window.location.href = response.url;
+              } else {
+                throw new Error("Admin signup failed");
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error); // Log the error
+              document.getElementById("admin-error-message").innerText =
+                error.message;
+            });
+        });
+
+      // Admin Login
+      document
+        .getElementById("admin-login-form")
+        .addEventListener("submit", (e) => {
+          e.preventDefault();
+
+          const email = document.getElementById("admin-login-email").value;
+          const password = document.getElementById(
+            "admin-login-password"
+          ).value;
+
+          signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+              return userCredential.user.getIdToken();
+            })
+            .then((idToken) => {
+              console.log("ID Token:", idToken); // Log the ID token
+              return fetch("/login", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: `id_token=${idToken}&user_type=admin`, // Set user_type to "admin"
+              });
+            })
+            .then((response) => {
+              if (response.ok) {
+                window.location.href = response.url;
+              } else {
+                throw new Error("Admin login failed");
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error); // Log the error
+              document.getElementById("admin-login-error-message").innerText =
+                error.message;
+            });
+        });
+
+      // User Signup
+      document
+        .getElementById("user-signup-form")
+        .addEventListener("submit", (e) => {
+          e.preventDefault();
+
+          const email = document.getElementById("user-signup-email").value;
+          const password = document.getElementById(
+            "user-signup-password"
+          ).value;
+
+          createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+              return userCredential.user.getIdToken();
+            })
+            .then((idToken) => {
+              return fetch("/signup", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: `id_token=${idToken}&user_type=user`, // Set user_type to "user"
+              });
+            })
+            .then((response) => {
+              if (response.ok) {
+                window.location.href = response.url;
+              } else {
+                throw new Error("User signup failed");
+              }
+            })
+            .catch((error) => {
+              document.getElementById("user-signup-error-message").innerText =
+                error.message;
+            });
+        });
+
+      // User Login
+      document
+        .getElementById("user-login-form")
+        .addEventListener("submit", (e) => {
+          e.preventDefault();
+
+          const email = document.getElementById("user-email").value;
+          const password = document.getElementById("user-password").value;
+
+          signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+              return userCredential.user.getIdToken();
+            })
+            .then((idToken) => {
+              return fetch("/login", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: `id_token=${idToken}&user_type=user`, // Set user_type to "user"
+              });
+            })
+            .then((response) => {
+              if (response.ok) {
+                window.location.href = response.url;
+              } else {
+                throw new Error("User login failed");
+              }
+            })
+            .catch((error) => {
+              document.getElementById("user-login-error-message").innerText =
+                error.message;
+            });
+        });
+    </script>
+  </head>
+  <body>
+    <div id="login-container">
+      <h1>Welcome</h1>
+      <select id="user-type">
+        <option value="">Select User Type</option>
+        <option value="admin">Admin</option>
+        <option value="user">User</option>
+      </select>
+
+      <!-- Admin Signup Form -->
+      <form id="admin-signup-form" style="display: none">
+        <h2>Admin Signup</h2>
+        <input
+          type="email"
+          id="admin-email"
+          placeholder="Admin Email"
+          required
+        />
+        <input
+          type="password"
+          id="admin-password"
+          placeholder="Admin Password"
+          required
+        />
+        <button type="submit">Sign Up as Admin</button>
+        <p id="admin-error-message" style="color: red"></p>
+      </form>
+
+      <!-- Admin Login Form -->
+      <form id="admin-login-form" style="display: none">
+        <h2>Admin Login</h2>
+        <input
+          type="email"
+          id="admin-login-email"
+          placeholder="Admin Email"
+          required
+        />
+        <input
+          type="password"
+          id="admin-login-password"
+          placeholder="Admin Password"
+          required
+        />
+        <button type="submit">Login as Admin</button>
+        <p id="admin-login-error-message" style="color: red"></p>
+      </form>
+
+      <!-- User Signup Form -->
+      <form id="user-signup-form" style="display: none">
+        <h2>User Signup</h2>
+        <input
+          type="email"
+          id="user-signup-email"
+          placeholder="User Email"
+          required
+        />
+        <input
+          type="password"
+          id="user-signup-password"
+          placeholder="User Password"
+          required
+        />
+        <button type="submit">Sign Up as User</button>
+        <p id="user-signup-error-message" style="color: red"></p>
+      </form>
+
+      <!-- User Login Form -->
+      <form id="user-login-form" style="display: none">
+        <h2>User Login</h2>
+        <input type="email" id="user-email" placeholder="User Email" required />
+        <input
+          type="password"
+          id="user-password"
+          placeholder="User Password"
+          required
+        />
+        <button type="submit">Login as User</button>
+        <p id="user-login-error-message" style="color: red"></p>
+      </form>
+    </div>
+  </body>
 </html>

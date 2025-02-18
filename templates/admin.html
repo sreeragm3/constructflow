@@ -1,12 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
-    <title>ADMIN</title>
-</head>
-<body>
-    <h1>ADMIN PAGE</h1>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+  </head>
+  <body>
+    <h1>Admin Dashboard</h1>
+    <form id="add-user-form">
+      <h2>Add User</h2>
+      <input
+        type="email"
+        id="new-user-email"
+        placeholder="User Email"
+        required
+      />
+      <button type="submit">Add User</button>
+      <p id="add-user-error-message" style="color: red"></p>
+    </form>
+
+    <script>
+      document
+        .getElementById("add-user-form")
+        .addEventListener("submit", (e) => {
+          e.preventDefault();
+
+          const email = document.getElementById("new-user-email").value;
+
+          fetch("/admin/add-user", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: `email=${email}`,
+          })
+            .then((response) => response.text())
+            .then((message) => {
+              alert(message); // Show success or error message
+            })
+            .catch((error) => {
+              document.getElementById("add-user-error-message").innerText =
+                error;
+            });
+        });
+    </script>
+  </body>
 </html>

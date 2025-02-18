@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Multiple Images</title>
-</head>
-<body>
-    <h2>Upload Multiple Images</h2>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Upload Images</title>
+  </head>
+  <body>
+    <h1>Welcome User</h1>
+    <p>This is the upload page.</p>
     <form action="/upload" method="post" enctype="multipart/form-data">
-        <input type="file" name="files[]" multiple>
-        <button type="submit">Upload</button>
+      <input type="file" name="files[]" multiple />
+      <button type="submit">Upload</button>
     </form>
-    <a href="/">Home</a> | <a href="/admin">Admin Page</a>
-</body>
+    <a href="/logout">Logout</a>
+  </body>
 </html>
